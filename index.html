@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indústrias Wayne • Sistema de Gerenciamento de Segurança</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Roboto+Mono:wght@400;500&amp;display=swap');
+        
+        :root { --yellow: #facc15; }
+        
+        * { transition-property: color, background-color, border-color, text-decoration-color, fill, stroke; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+        
+        body { font-family: 'Inter', system_ui, sans-serif; }
+        .title-font { font-family: 'Roboto Mono', monospace; }
+        
+        .bg-batman { background: linear-gradient(180deg, #111111 0%, #1f1f1f 100%); }
+        .text-bat-yellow { color: #facc15; }
+        .border-bat-yellow { border-color: #facc15; }
+        
+        /* Mini morcegos pretos voando pela tela inteira (discretos, estilo Batman) */
+        .mini-bat {
+            position: fixed;
+            font-size: 24px;
+            color: #111111;
+            filter: drop-shadow(0 0 8px #facc15);
+            opacity: 0.22;
+            z-index: 9999;
+            pointer-events: none;
+            animation: flyMiniBat linear infinite;
+            text-shadow: 0 0 12px #facc15;
+        }
+        
+        @keyframes flyMiniBat {
+            0% { transform: translateX(-120px) rotate(-25deg); }
+            100% { transform: translateX(calc(100vw + 120px)) rotate(25deg); }
+        }
+        
+        /* Animação de entrada do Batman */
+        @keyframes batmanFlyIn {
+            0% { transform: perspective(1200px) translateZ(-800px) scale(0.3) rotateX(25deg); opacity: 0; }
+            60% { transform: perspective(1200px) translateZ(0px) scale(1.05) rotateX(0deg); opacity: 1; }
+            100% { transform: perspective(1200px) translateZ(50px) scale(1) rotateX(-5deg); }
+        }
+        .batman-hero { animation: batmanFlyIn 4s cubic-bezier(0.25, 0.1, 0.25, 1) forwards; }
+        
+        .live-dot { animation: liveBlink 1.5s infinite; }
+        @keyframes liveBlink { 0%,100% { opacity: 1; } 50% { opacity: 0.2; } }
+        
+        .resource-card:hover { transform: translateY(-4px) rotateX(8deg) scale(1.03); }
+        
+        /* Estilo CCTV para vídeos de câmeras */
+        .cctv-video {
+            filter: grayscale(85%) contrast(1.25) brightness(0.85) sepia(0.1);
+        }
+        
+        .nav-link:after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background-color: #facc15;
+        }
+        .nav-link:hover:after { width: 100%; }
+    </style>
+</head>
+<body class="bg-batman text-white overflow-x-hidden">
+
+    <!-- MINI MORCEGOS PRETOS VOANDO PELA TELA INTEIRA (sempre visíveis) -->
+    <div id="mini-bats-container" class="fixed inset-0 pointer-events-none z-[9999]"></div>
+
+    <!-- LANDING PAGE -->
+   <!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indústrias Wayne • Sistema de Gerenciamento de Segurança</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Roboto+Mono:wght@400;500&amp;display=swap');
+        
+        :root { --yellow: #facc15; }
+        
+        * { transition-property: color, background-color, border-color, text-decoration-color, fill, stroke; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+        
+        body { font-family: 'Inter', system_ui, sans-serif; }
+        .title-font { font-family: 'Roboto Mono', monospace; }
+        
+        .bg-batman { background: linear-gradient(180deg, #0a0a0a 0%, #1f1f1f 100%); }
+        .text-bat-yellow { color: #facc15; }
+        .border-bat-yellow { border-color: #facc15; }
+
+        /* Animação Batman voando em direção à tela */
+        @keyframes batmanFlyIn {
+            0% { 
+                transform: perspective(1600px) translateZ(-1400px) scale(0.15) rotateX(40deg); 
+                opacity: 0; 
+            }
+            55% { 
+                transform: perspective(1600px) translateZ(120px) scale(1.08) rotateX(-8deg); 
+                opacity: 1; 
+            }
+            100% { 
+                transform: perspective(1600px) translateZ(50px) scale(1) rotateX(-5deg); 
+            }
+        }
+        .batman-hero {
+            animation: batmanFlyIn 5s cubic-bezier(0.23, 0.1, 0.25, 1) forwards;
+            filter: drop-shadow(0 25px 60px rgba(250, 204, 21, 0.6));
+        }
+
+        .live-dot { animation: liveBlink 1.5s infinite; }
+        @keyframes liveBlink { 0%,100% { opacity: 1; } 50% { opacity: 0.2; } }
+
+        .nav-link:after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background-color: #facc15;
+        }
+        .nav-link:hover:after { width: 100%; }
+    </style>
+</head>
+<body class="bg-batman text-white overflow-x-hidden">
+
+    <!-- LANDING PAGE - Atualizada com sua nova imagem -->
+    <div id="landing" class="min-h-screen flex flex-col items-center justify-center relative overflow-hidden bg-batman">
+        <canvas id="three-canvas" class="absolute inset-0 w-full h-full opacity-40"></canvas>
+        
+        <div class="relative z-10 max-w-5xl mx-auto text-center px-6 py-12">
+            <!-- Logo Wayne -->
+            <div class="flex items-center justify-center gap-4 mb-10">
+                <div class="w-14 h-14 bg-yellow-400 rounded-2xl flex items-center justify-center text-5xl shadow-[0_0_40px_#facc15] rotate-45">🦇</div>
+                <h1 class="title-font text-6xl md:text-7xl tracking-[8px] text-bat-yellow font-bold">WAYNE</h1>
+                <div class="text-4xl md:text-5xl font-bold text-white">INDÚSTRIAS</div>
+            </div>
+
+            <h2 class="text-4xl md:text-5xl font-semibold mb-6 text-white leading-tight">
+                Sistema de Gerenciamento de Segurança
+            </h2>
+            <p class="text-lg md:text-xl text-gray-400 max-w-lg mx-auto mb-16">
+                Proteção de alto nível para as instalações mais seguras de Gotham.
+            </p>
+
+            <!-- Nova imagem do Batman voando - sem fundo -->
+            <div class="relative mx-auto max-w-lg mb-14">
+                <img id="batman-hero" 
+                     src="https://www.pngplay.com/wp-content/uploads/6/Flying-Batman-Transparent-PNG.png" 
+                     alt="Batman Voando"
+                     class="batman-hero w-full mx-auto">
+                
+                <div class="absolute -top-6 -right-6 bg-yellow-400 text-black text-sm font-bold px-6 py-2 rounded-2xl rotate-12 shadow-2xl">
+                    PROTEÇÃO ATIVADA
+                </div>
+            </div>
+
+            <button onclick="startLogin()" 
+                    class="group relative inline-flex items-center justify-center gap-3 bg-black border-2 border-bat-yellow hover:bg-yellow-400 hover:text-black text-bat-yellow font-semibold text-2xl px-16 py-7 rounded-3xl overflow-hidden shadow-xl">
+                <span class="relative z-10">ACESSAR O SISTEMA</span>
+                <span class="text-4xl">→</span>
+            </button>
+
+            <p class="text-xs text-gray-500 mt-16">
+                © 2026 Indústrias Wayne • Gotham City
+            </p>
+        </div>
+    </div>
+
+    <!-- LOGIN PAGE (mantido igual ao seu código) -->
+    <div id="login-page" class="hidden min-h-screen bg-batman flex items-center justify-center p-6">
+        <div class="max-w-md w-full bg-[#1a1a1a] border border-bat-yellow/30 rounded-3xl p-10 shadow-2xl">
+            <div class="flex justify-center mb-8">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-yellow-400 rounded-2xl flex items-center justify-center text-4xl rotate-45">🦇</div>
+                    <h1 class="title-font text-4xl text-bat-yellow">WAYNE</h1>
+                </div>
+            </div>
+            <h2 class="text-3xl font-semibold text-center mb-2">Bem-vindo de volta</h2>
+            <p class="text-center text-gray-400 mb-10">Autentique-se para acessar as áreas restritas</p>
+            <div class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium mb-2 text-gray-300">Usuário</label>
+                    <input id="username" type="text" value="admin" class="w-full bg-black border border-gray-700 focus:border-bat-yellow rounded-2xl px-5 py-4 outline-none text-white">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2 text-gray-300">Senha</label>
+                    <input id="password" type="password" value="1234" class="w-full bg-black border border-gray-700 focus:border-bat-yellow rounded-2xl px-5 py-4 outline-none text-white">
+                </div>
+                <div class="pt-4">
+                    <button onclick="handleLogin()" class="w-full py-5 text-xl font-semibold bg-yellow-400 hover:bg-white text-black rounded-3xl flex items-center justify-center gap-3">
+                        ENTRAR NO SISTEMA <span class="text-3xl">→</span>
+                    </button>
+                </div>
+                <div class="text-center text-xs text-gray-400">
+                    <br>
+                    <span class="block mt-1"></span>
+                    <span class="block"></span>
+                    <span class="block"></span>
+                </div>
+            </div>
+            <div onclick="backToLanding()" class="mt-8 text-center text-gray-400 text-sm flex items-center justify-center gap-1 cursor-pointer hover:text-bat-yellow">← Voltar para tela inicial</div>
+        </div>
+    </div>
+
+    <!-- O restante do seu código (main-app, páginas, modais, script) permanece exatamente igual -->
+    <!-- Copie e cole aqui todo o conteúdo a partir de <div id="main-app"> até o final do seu código original -->
+
+    <!-- ... (cole aqui o resto do seu código anterior) ... -->
+
+    <script>
+        // Mantenha todo o seu JavaScript original aqui
+        // Apenas adicione ou mantenha initThreeJS() para o fundo sutil
+
+        function main() {
+            initThreeJS();
+            console.log('%c✅ Tela inicial atualizada com nova imagem do Batman', 'background:#facc15;color:#111;font-size:13px');
+        }
+        window.onload = main;
+    </script>
+</body>
+</html>
+
+    <!-- LOGIN PAGE -->
+    <div id="login-page" class="hidden min-h-screen bg-batman flex items-center justify-center p-6">
+        <div class="max-w-md w-full bg-[#1a1a1a] border border-bat-yellow/30 rounded-3xl p-10 shadow-2xl">
+            <div class="flex justify-center mb-8">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-yellow-400 rounded-2xl flex items-center justify-center text-4xl rotate-45">🦇</div>
+                    <h1 class="title-font text-4xl text-bat-yellow">WAYNE</h1>
+                </div>
+            </div>
+            <h2 class="text-3xl font-semibold text-center mb-2">Bem-vindo de volta</h2>
+            <p class="text-center text-gray-400 mb-10">Autentique-se para acessar as áreas restritas</p>
+            <div class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium mb-2 text-gray-300">Usuário</label>
+                    <input id="username" type="text" value="admin" class="w-full bg-black border border-gray-700 focus:border-bat-yellow rounded-2xl px-5 py-4 outline-none text-white">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2 text-gray-300">Senha</label>
+                    <input id="password" type="password" value="1234" class="w-full bg-black border border-gray-700 focus:border-bat-yellow rounded-2xl px-5 py-4 outline-none text-white">
+                </div>
+                <div class="pt-4">
+                    <button onclick="handleLogin()" class="w-full py-5 text-xl font-semibold bg-yellow-400 hover:bg-white text-black rounded-3xl flex items-center justify-center gap-3">
+                        ENTRAR NO SISTEMA <span class="text-3xl">→</span>
+                    </button>
+                </div>
+                <div class="text-center text-xs text-gray-400">
+                    <br>
+                    <span class="block mt-1"></span>
+                    <span class="block"></span>
+                    <span class="block"></span>
+                </div>
+            </div>
+            <div onclick="backToLanding()" class="mt-8 text-center text-gray-400 text-sm flex items-center justify-center gap-1 cursor-pointer hover:text-bat-yellow">← Voltar para tela inicial</div>
+        </div>
+    </div>
+
+    <!-- APLICAÇÃO PRINCIPAL -->
+    <div id="main-app" class="hidden min-h-screen bg-batman">
+        <!-- NAVBAR -->
+        <nav class="bg-black border-b border-bat-yellow/30 sticky top-0 z-50">
+            <div class="max-w-screen-2xl mx-auto px-8 py-5 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 bg-yellow-400 rounded-2xl flex items-center justify-center text-3xl rotate-45">🦇</div>
+                    <h1 class="title-font text-3xl text-bat-yellow tracking-widest">WAYNE</h1>
+                    <span class="text-xl font-medium">Segurança</span>
+                </div>
+                <div class="flex items-center gap-8">
+                    <div id="user-info" class="flex items-center gap-3 text-sm"></div>
+                    <button onclick="logout()" class="flex items-center gap-2 bg-gray-900 hover:bg-red-500/10 hover:text-red-400 px-6 py-3 rounded-3xl text-sm font-medium">SAIR <span class="text-xl">🦇</span></button>
+                </div>
+            </div>
+            <div class="max-w-screen-2xl mx-auto px-8 flex items-center gap-8 border-t border-bat-yellow/10 py-4 text-sm font-medium">
+                <a onclick="navigateTo('dashboard')" id="menu-dashboard" class="nav-link cursor-pointer flex items-center gap-2 text-bat-yellow"><span>📊</span> DASHBOARD</a>
+                <a onclick="navigateTo('acesso')" id="menu-acesso" class="nav-link cursor-pointer flex items-center gap-2"><span>🔑</span> CONTROLE DE ACESSO</a>
+                <a onclick="navigateTo('recursos')" id="menu-recursos" class="nav-link cursor-pointer flex items-center gap-2"><span>📦</span> GERENCIAMENTO DE RECURSOS</a>
+                <a onclick="navigateTo('vigilancia')" id="menu-vigilancia" class="nav-link cursor-pointer flex items-center gap-2"><span>📹</span> VIGILÂNCIA</a>
+                <a onclick="navigateTo('viloes')" id="menu-viloes" class="nav-link cursor-pointer flex items-center gap-2"><span>🦹</span> GALERIA DE VILÕES</a>
+                <div class="ml-auto flex items-center bg-black border border-bat-yellow/30 text-xs font-mono px-4 py-2 rounded-3xl">
+                    <div class="w-2 h-2 bg-green-400 rounded-full live-dot mr-2"></div>
+                    CONECTADO • GOTHAM
+                </div>
+            </div>
+        </nav>
+
+        <!-- DASHBOARD -->
+        <div id="page-dashboard" class="page p-8 max-w-screen-2xl mx-auto">
+            <h1 class="text-4xl font-semibold mb-8">Painel de Controle</h1>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+                <div class="bg-[#1f1f1f] p-6 rounded-3xl border border-bat-yellow/20">
+                    <div class="flex justify-between"><div><p class="text-gray-400 text-sm">ALERTAS ATIVOS</p><p id="alertas-count" class="text-6xl font-bold text-bat-yellow">03</p></div><div class="text-5xl">⚠️</div></div>
+                    <div class="h-2 bg-gray-800 rounded-full mt-6 overflow-hidden"><div class="h-2 w-1/3 bg-yellow-400"></div></div>
+                </div>
+                <div class="bg-[#1f1f1f] p-6 rounded-3xl border border-bat-yellow/20">
+                    <div class="flex justify-between"><div><p class="text-gray-400 text-sm">USUÁRIOS LOGADOS</p><p id="usuarios-logados" class="text-6xl font-bold text-bat-yellow">14</p></div><div class="text-5xl">👤</div></div>
+                </div>
+                <div class="bg-[#1f1f1f] p-6 rounded-3xl border border-bat-yellow/20">
+                    <div class="flex justify-between"><div><p class="text-gray-400 text-sm">CÂMERAS ATIVAS</p><p class="text-6xl font-bold text-bat-yellow">48</p></div><div class="text-5xl">📹</div></div>
+                </div>
+                <div class="bg-[#1f1f1f] p-6 rounded-3xl border border-bat-yellow/20">
+                    <div class="flex justify-between"><div><p class="text-gray-400 text-sm">RECURSOS EM USO</p><p class="text-6xl font-bold text-bat-yellow">27</p></div><div class="text-5xl">🚗</div></div>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2 bg-[#1f1f1f] rounded-3xl p-6">
+                    <h3 class="font-semibold mb-4">Atividades de Segurança (últimas 24h)</h3>
+                    <canvas id="chart-atividades" class="w-full h-80"></canvas>
+                </div>
+                <div class="bg-[#1f1f1f] rounded-3xl p-6">
+                    <h3 class="font-semibold mb-6">Status dos Recursos</h3>
+                    <div id="recursos-status" class="space-y-6"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTROLE DE ACESSO -->
+        <div id="page-acesso" class="page hidden p-8 max-w-screen-2xl mx-auto">
+            <h1 class="text-4xl font-semibold mb-8 flex items-center gap-3">🔑 Controle de Acesso</h1>
+            <div class="bg-[#1f1f1f] rounded-3xl p-8">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-gray-700">
+                            <th class="text-left py-4">Usuário</th>
+                            <th class="text-left py-4">Cargo</th>
+                            <th class="text-left py-4">Nível de Acesso</th>
+                            <th class="text-left py-4">Último Acesso</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabela-acesso" class="text-sm"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- GERENCIAMENTO DE RECURSOS -->
+        <div id="page-recursos" class="page hidden p-8 max-w-screen-2xl mx-auto">
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-4xl font-semibold">📦 Gerenciamento de Recursos</h1>
+                <button onclick="abrirModalRecurso()" class="bg-yellow-400 text-black px-8 py-4 rounded-3xl font-semibold flex items-center gap-2">+ Adicionar Recurso</button>
+            </div>
+            <div class="bg-[#1f1f1f] rounded-3xl p-8 overflow-x-auto">
+                <table class="w-full min-w-[800px]">
+                    <thead>
+                        <tr class="border-b border-gray-700">
+                            <th class="text-left py-4">Nome</th>
+                            <th class="text-left py-4">Tipo</th>
+                            <th class="text-left py-4">Status</th>
+                            <th class="text-left py-4">Quantidade</th>
+                            <th class="text-left py-4">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabela-recursos" class="text-sm divide-y"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- VIGILÂNCIA (com vídeos reais de rua / câmeras de segurança) -->
+        <div id="page-vigilancia" class="page hidden p-8 max-w-screen-2xl mx-auto">
+            <h1 class="text-4xl font-semibold mb-8">📹 Vigilância em Tempo Real</h1>
+            <div id="grid-cameras" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+        </div>
+
+        <!-- GALERIA DE VILÕES -->
+        <div id="page-viloes" class="page hidden p-8 max-w-screen-2xl mx-auto">
+            <h1 class="text-4xl font-semibold mb-8">🦹 Galeria de Vilões</h1>
+            <div id="grid-viloes" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8"></div>
+        </div>
+    </div>
+
+    <!-- MODAL RECURSO (mantido do código anterior) -->
+    <div id="modal-recurso" onclick="if(event.target.id === 'modal-recurso') fecharModalRecurso()" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-[9999]">
+        <div onclick="event.stopImmediatePropagation()" class="bg-[#1f1f1f] rounded-3xl w-full max-w-lg p-8">
+            <h3 id="modal-title" class="text-2xl font-semibold mb-6">Adicionar Novo Recurso</h3>
+            <input id="recurso-id" type="hidden">
+            <div class="space-y-6">
+                <div>
+                    <label class="block text-sm mb-2">Nome do Recurso</label>
+                    <input id="recurso-nome" type="text" class="w-full bg-black border border-gray-700 rounded-2xl px-5 py-4">
+                </div>
+                <div class="grid grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm mb-2">Tipo</label>
+                        <select id="recurso-tipo" class="w-full bg-black border border-gray-700 rounded-2xl px-5 py-4">
+                            <option value="Veículo">Veículo</option>
+                            <option value="Equipamento">Equipamento</option>
+                            <option value="Dispositivo de Segurança">Dispositivo de Segurança</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm mb-2">Quantidade</label>
+                        <input id="recurso-qtd" type="number" value="1" class="w-full bg-black border border-gray-700 rounded-2xl px-5 py-4">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm mb-2">Status</label>
+                    <div class="flex gap-4">
+                        <label onclick="this.querySelector('input').checked=true" class="flex-1 cursor-pointer">
+                            <input type="radio" name="status" value="Ativo" checked class="hidden peer">
+                            <div class="peer-checked:bg-green-500/10 peer-checked:text-green-400 border border-gray-700 rounded-2xl py-4 text-center">Ativo</div>
+                        </label>
+                        <label onclick="this.querySelector('input').checked=true" class="flex-1 cursor-pointer">
+                            <input type="radio" name="status" value="Em Manutenção" class="hidden peer">
+                            <div class="peer-checked:bg-yellow-400/10 peer-checked:text-yellow-400 border border-gray-700 rounded-2xl py-4 text-center">Em Manutenção</div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="flex gap-4 mt-10">
+                <button onclick="fecharModalRecurso()" class="flex-1 py-4 text-gray-400">Cancelar</button>
+                <button onclick="salvarRecurso()" class="flex-1 py-4 bg-yellow-400 text-black rounded-3xl font-semibold">Salvar Recurso</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CÂMERA (atualizado com vídeo) -->
+    <div id="modal-camera" onclick="if(event.target.id === 'modal-camera') fecharModalCamera()" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-[9999]">
+        <div class="bg-black rounded-3xl max-w-4xl w-full mx-4 overflow-hidden">
+            <div class="flex justify-between items-center border-b border-gray-800 px-8 py-6">
+                <div id="modal-camera-nome" class="text-2xl font-semibold"></div>
+                <div onclick="fecharModalCamera()" class="cursor-pointer text-4xl">✕</div>
+            </div>
+            <div class="relative">
+                <video id="modal-camera-video" class="w-full cctv-video" autoplay loop muted></video>
+                <div class="absolute top-6 left-6 bg-red-500 text-white text-xs font-bold px-6 py-1 rounded-3xl flex items-center gap-2">
+                    <span class="live-dot w-3 h-3 bg-white rounded-full"></span> AO VIVO
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL VILÃO (novo - mostra pelo menos 2 imagens como se estivesse preso) -->
+    <div id="modal-vilao" onclick="if(event.target.id === 'modal-vilao') fecharModalVilao()" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-[9999]">
+        <div class="bg-[#1f1f1f] rounded-3xl max-w-3xl w-full mx-4 overflow-hidden">
+            <div class="flex justify-between items-center px-8 py-6 border-b border-gray-700">
+                <div id="vilao-nome-modal" class="text-3xl font-semibold"></div>
+                <button onclick="fecharModalVilao()" class="text-4xl leading-none">✕</button>
+            </div>
+            <div class="p-8">
+                <div id="vilao-imagens" class="grid grid-cols-2 gap-6"></div>
+                <p id="vilao-desc-modal" class="mt-8 text-gray-300 text-center text-lg"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===================== DADOS GLOBAIS =====================
+        let currentUser = null;
+        let currentRole = null;
+        
+        let recursosDB = JSON.parse(localStorage.getItem('wayne_recursos')) || [
+            { id: 1, nome: "Batmobile X-7", tipo: "Veículo", status: "Ativo", quantidade: 1 },
+            { id: 2, nome: "Drone de Vigilância Mark IV", tipo: "Equipamento", status: "Ativo", quantidade: 12 },
+            { id: 3, nome: "Sistema de Câmeras Infravermelhas", tipo: "Dispositivo de Segurança", status: "Ativo", quantidade: 48 },
+            { id: 4, nome: "Armadura Tática Protótipo", tipo: "Equipamento", status: "Em Manutenção", quantidade: 3 }
+        ];
+        
+        let usuariosDB = [
+            { id: 1, nome: "Bruce Wayne", cargo: "Administrador", nivel: "Máximo", ultimo: "Agora" },
+            { id: 2, nome: "Lucius Fox", cargo: "Gerente", nivel: "Alto", ultimo: "Há 2h" },
+            { id: 3, nome: "Alfred Pennyworth", cargo: "Funcionário", nivel: "Padrão", ultimo: "Ontem" }
+        ];
+        
+        // CÂMERAS COM VÍDEOS DE RUA / CÂMERAS DE SEGURANÇA
+        const camerasDB = [
+            { id: 1, nome: "Entrada Norte - Gotham", local: "Portão Principal", video: "https://media.istockphoto.com/id/1872489093/pt/v%C3%ADdeo/surveillance-camera-cctv-video-multiple-screens-show-secure-underground-garage-high-tech.mp4?s=mp4-640x640-is&k=20&c=OBf-ygt-69_lVbKqvJ8fOwqNCux9UXtO7p7O10y73qQ=" },
+            { id: 2, nome: "Rua Industrial", local: "Setor de Armazéns", video: "https://media.istockphoto.com/id/140600915/pt/v%C3%ADdeo/malecon-havana-cuba.mp4?s=mp4-640x640-is&k=20&c=92eEpgfgs413u-wnxOCjL0SVM0mR-_jHekm4k4BkUb4=" },
+            { id: 3, nome: "Torre de Vigilância 3", local: "Área Externa", video: "https://media.istockphoto.com/id/872512026/pt/v%C3%ADdeo/multipath-target-monitoring.mp4?s=mp4-640x640-is&k=20&c=RiyAsHvWqxtihJ46qRKD-4FGffG6vXdcYWvvyRwn8nE=" },
+            { id: 4, nome: "Laboratório Externo", local: "Zona Restrita", video: "https://media.istockphoto.com/id/2263181376/pt/v%C3%ADdeo/cctv-of-photo-studio-with-crew-inside.mp4?s=mp4-640x640-is&k=20&c=y4zak82oJB_jOdp2Y7DDKBIlmf9LZ_BS0_9dxgnx1W8=" }
+        ];
+        
+        // VILÕES COM 2 IMAGENS CADA (estilo "preso")
+        const viloesDB = [
+            {
+                nome: "Coringa",
+                descricao: "Mestre do caos. Planejador imprevisível. Atualmente sob custódia máxima em Arkham.",
+                imagens: [
+                    "https://i1.sndcdn.com/artworks-000625667812-tvaqmu-t1080x1080.jpg",
+                    "https://wallpaperaccess.com/full/1096840.jpg",
+                ],
+                nivel: "EXTREMO"
+            },
+            {
+                nome: "Pinguim",
+                descricao: "Chefão do crime organizado. Controla o submundo com armas e corrupção.",
+                imagens: [
+                    "https://www.comboinfinito.com.br/principal/wp-content/uploads/2018/07/pinguim-filme-do-batman.jpg",
+                    "https://i.pinimg.com/736x/75/28/21/752821d5b8c55dca346c1a0d2c2fdb39.jpg"
+                ],
+                nivel: "ALTO"
+            },
+            {
+                nome: "Mulher Gato",
+                descricao: "Uma ladra ágil e estratégica que realiza roubos sofisticados em Gotham. Deixa sua marca com elegância e desaparece sem deixar rastros. 🐾",
+                imagens: [
+                    "https://www.epipoca.com.br/wp-content/uploads/2022/10/Michelle-Pfeiffer-como-Mulher-Gato-Reproducao.jpg",
+                    "https://www.einerd.com/wp-content/uploads/2021/01/mulher-gato-michelle-pfeiffer-e1611921089816.jpeg"
+                ],
+                nivel: "MÉDIO"
+            },
+            {
+                nome: "Duas-Caras",
+                descricao: "Ex-promotor que age por acaso. Usa uma moeda para decidir suas ações.",
+                imagens: [
+                    "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1QAUJA.img?w=740&h=416&m=4&q=55",
+                    "https://static1.srcdn.com/wordpress/wp-content/uploads/2020/05/two-face-Cropped.jpg?q=50&fit=crop&w=825&dpr=1.5"
+                ],
+                nivel: "ALTO"
+            },
+            {
+                nome: "Espantalho",
+                descricao: "Usa toxina do medo para induzir pânico em massa nas vítimas.",
+                imagens: [
+                    "https://wallpaperaccess.com/full/1193719.jpg",
+                    "https://www.rbsdirect.com.br/filestore/0/6/2/7/7/0/5_e8107c6dd09c5ea/5077260_eefab490be74189.jpg?format=webp&w=700"
+                ],
+                nivel: "EXTREMO"
+            }
+        ];
+        
+        // ===================== THREE.JS + MORCEGOS 3D =====================
+        let scene3d, camera3d, renderer3d, morcegos3d = [];
+        
+        function initThreeJS() {
+            const canvas = document.getElementById('three-canvas');
+            if (!canvas) return;
+            scene3d = new THREE.Scene();
+            scene3d.fog = new THREE.Fog(0x111111, 10, 300);
+            camera3d = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera3d.position.z = 60;
+            renderer3d = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+            renderer3d.setSize(window.innerWidth, window.innerHeight);
+            renderer3d.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            
+            const light = new THREE.PointLight(0xfacc15, 1.5, 200);
+            light.position.set(20, 30, 50);
+            scene3d.add(light);
+            
+            for (let i = 0; i < 35; i++) {
+                const batGroup = new THREE.Group();
+                const body = new THREE.Mesh(new THREE.SphereGeometry(0.8, 6, 6), new THREE.MeshBasicMaterial({ color: 0x111111 }));
+                batGroup.add(body);
+                
+                const wingL = new THREE.Mesh(new THREE.PlaneGeometry(2.8, 1.2), new THREE.MeshBasicMaterial({ color: 0x222222, side: THREE.DoubleSide }));
+                wingL.rotation.set(0, 0, Math.PI / 3); wingL.position.set(-1.2, 0, 0); batGroup.add(wingL);
+                const wingR = wingL.clone(); wingR.rotation.set(0, 0, -Math.PI / 3); wingR.position.set(1.2, 0, 0); batGroup.add(wingR);
+                
+                batGroup.position.set(Math.random() * 80 - 40, Math.random() * 60 - 30, Math.random() * -120 - 20);
+                batGroup.userData = { speed: 0.6 + Math.random() * 1.4, rotSpeed: (Math.random() - 0.5) * 0.08 };
+                scene3d.add(batGroup);
+                morcegos3d.push(batGroup);
+            }
+            
+            function animate3D() {
+                requestAnimationFrame(animate3D);
+                morcegos3d.forEach(bat => {
+                    bat.position.z += bat.userData.speed;
+                    bat.rotation.z = Math.sin(Date.now() * bat.userData.rotSpeed) * 0.4;
+                    if (bat.position.z > 80) {
+                        bat.position.z = -150;
+                        bat.position.x = Math.random() * 80 - 40;
+                        bat.position.y = Math.random() * 60 - 30;
+                    }
+                });
+                renderer3d.render(scene3d, camera3d);
+            }
+            animate3D();
+            
+            window.addEventListener('resize', () => {
+                camera3d.aspect = window.innerWidth / window.innerHeight;
+                camera3d.updateProjectionMatrix();
+                renderer3d.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+        
+        function createCSSBats() {
+            const container = document.getElementById('css-bats');
+            for (let i = 0; i < 18; i++) {
+                const bat = document.createElement('div');
+                bat.className = 'bat';
+                bat.textContent = '🦇';
+                bat.style.top = `${Math.random() * 85 + 5}%`;
+                bat.style.animationDuration = `${8 + Math.random() * 14}s`;
+                bat.style.animationDelay = `-${Math.random() * 20}s`;
+                bat.style.fontSize = `${18 + Math.random() * 22}px`;
+                container.appendChild(bat);
+            }
+        }
+        
+        // ===================== MINI MORCEGOS PRETOS (nova funcionalidade) =====================
+        function createMiniBats() {
+            const container = document.getElementById('mini-bats-container');
+            for (let i = 0; i < 14; i++) {
+                const bat = document.createElement('div');
+                bat.className = 'mini-bat';
+                bat.textContent = '🦇';
+                bat.style.top = `${Math.random() * 95 + 3}%`;
+                bat.style.animationDuration = `${10 + Math.random() * 22}s`;
+                bat.style.animationDelay = `-${Math.random() * 30}s`;
+                bat.style.fontSize = `${14 + Math.random() * 18}px`;
+                container.appendChild(bat);
+            }
+        }
+        
+        // ===================== LOGIN =====================
+        function startLogin() {
+            document.getElementById('landing').classList.add('hidden');
+            document.getElementById('login-page').classList.remove('hidden');
+        }
+        
+        function backToLanding() {
+            document.getElementById('login-page').classList.add('hidden');
+            document.getElementById('landing').classList.remove('hidden');
+        }
+        
+        function handleLogin() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            
+            if (password === '1234') {
+                if (username === 'admin') { currentUser = 'Bruce Wayne'; currentRole = 'administrador'; }
+                else if (username === 'gerente') { currentUser = 'Lucius Fox'; currentRole = 'gerente'; }
+                else if (username === 'funcionario') { currentUser = 'Alfred Pennyworth'; currentRole = 'funcionario'; }
+                else { alert('Usuário não reconhecido!'); return; }
+                
+                document.getElementById('login-page').classList.add('hidden');
+                document.getElementById('main-app').classList.remove('hidden');
+                loadUserInfo();
+                navigateTo('dashboard');
+                initAppData();
+            } else {
+                alert('Senha incorreta. Dica: use 1234 para todos os usuários de teste.');
+            }
+        }
+        
+        function loadUserInfo() {
+            const container = document.getElementById('user-info');
+            container.innerHTML = `
+                <div class="text-xs uppercase tracking-widest bg-black px-3 py-1 rounded-3xl flex items-center">
+                    <span class="text-bat-yellow">🦇</span><span class="ml-2">${currentRole.toUpperCase()}</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-yellow-400 text-black rounded-2xl flex items-center justify-center text-xl">${currentUser[0]}</div>
+                    <div>
+                        <div class="font-medium">${currentUser}</div>
+                        <div class="text-xs text-gray-400">${currentRole}</div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function logout() {
+            if (confirm('Deseja realmente sair do sistema de segurança?')) {
+                currentUser = null; currentRole = null;
+                document.getElementById('main-app').classList.add('hidden');
+                document.getElementById('landing').classList.remove('hidden');
+                initThreeJS();
+            }
+        }
+        
+        // ===================== NAVEGAÇÃO =====================
+        function navigateTo(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+            const target = document.getElementById(`page-${page}`);
+            if (target) target.classList.remove('hidden');
+            
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('text-bat-yellow'));
+            const activeMenu = document.getElementById(`menu-${page}`);
+            if (activeMenu) activeMenu.classList.add('text-bat-yellow');
+            
+            if (page === 'acesso' && currentRole !== 'administrador') {
+                target.innerHTML = `<div class="bg-red-900/30 border border-red-400 text-red-300 p-12 rounded-3xl text-center">🔒 Acesso restrito a Administradores de Segurança</div>`;
+            }
+            if (page === 'recursos' && !['administrador', 'gerente'].includes(currentRole)) {
+                target.innerHTML = `<div class="bg-amber-900/30 border border-amber-400 text-amber-300 p-12 rounded-3xl text-center">🔒 Apenas gerentes e administradores podem gerenciar recursos</div>`;
+            }
+        }
+        
+        // ===================== DASHBOARD =====================
+        function initDashboard() {
+            const ctx = document.getElementById('chart-atividades');
+            if (!ctx) return;
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['00h', '04h', '08h', '12h', '16h', '20h', 'Agora'],
+                    datasets: [{
+                        label: 'Alertas de Intrusão',
+                        data: [2, 1, 4, 7, 3, 9, 3],
+                        borderColor: '#facc15',
+                        tension: 0.4,
+                        borderWidth: 3
+                    }, {
+                        label: 'Câmeras Ativas',
+                        data: [48, 48, 47, 48, 48, 48, 48],
+                        borderColor: '#666',
+                        tension: 0.1,
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    plugins: { legend: { display: true, position: 'top', labels: { color: '#ddd' } } },
+                    scales: { y: { grid: { color: '#333' }, ticks: { color: '#aaa' } }, x: { grid: { color: '#333' }, ticks: { color: '#aaa' } } }
+                }
+            });
+            
+            const statusContainer = document.getElementById('recursos-status');
+            statusContainer.innerHTML = recursosDB.slice(0, 3).map(r => `
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">${r.tipo === 'Veículo' ? '🚗' : r.tipo === 'Equipamento' ? '📟' : '📡'}</span>
+                        <div>
+                            <p class="font-medium">${r.nome}</p>
+                            <p class="text-xs text-gray-400">${r.tipo}</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="inline-block px-4 py-1 rounded-3xl text-xs ${r.status === 'Ativo' ? 'bg-green-400 text-black' : 'bg-yellow-400 text-black'}">${r.status}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // ===================== CONTROLE DE ACESSO =====================
+        function renderAcessoTable() {
+            const tbody = document.getElementById('tabela-acesso');
+            tbody.innerHTML = usuariosDB.map(u => `
+                <tr class="border-b border-gray-700 last:border-0 hover:bg-white/5">
+                    <td class="py-5">${u.nome}</td>
+                    <td class="py-5">${u.cargo}</td>
+                    <td class="py-5"><span class="px-5 py-1 text-xs rounded-3xl bg-bat-yellow/10 text-bat-yellow">${u.nivel}</span></td>
+                    <td class="py-5 text-gray-400">${u.ultimo}</td>
+                    <td class="py-5 text-right"><button onclick="alert('Acesso revogado para ${u.nome} (simulado)')" class="text-red-400 text-xs">REVOGAR</button></td>
+                </tr>
+            `).join('');
+        }
+        
+        // ===================== RECURSOS =====================
+        function renderRecursosTable() {
+            const tbody = document.getElementById('tabela-recursos');
+            tbody.innerHTML = recursosDB.map(r => `
+                <tr class="border-b border-gray-700 last:border-0 hover:bg-white/5">
+                    <td class="py-6 font-medium">${r.nome}</td>
+                    <td class="py-6">${r.tipo}</td>
+                    <td class="py-6"><span class="px-6 py-1 rounded-3xl text-xs ${r.status === 'Ativo' ? 'bg-green-400 text-black' : 'bg-amber-400 text-black'}">${r.status}</span></td>
+                    <td class="py-6">${r.quantidade}</td>
+                    <td class="py-6 text-right flex gap-4 justify-end">
+                        <button onclick="editarRecurso(${r.id})" class="text-bat-yellow">EDITAR</button>
+                        <button onclick="deletarRecurso(${r.id})" class="text-red-400">EXCLUIR</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        function abrirModalRecurso() {
+            document.getElementById('modal-recurso').classList.remove('hidden');
+            document.getElementById('modal-title').textContent = 'Adicionar Novo Recurso';
+            document.getElementById('recurso-id').value = '';
+            document.getElementById('recurso-nome').value = '';
+            document.getElementById('recurso-qtd').value = 1;
+        }
+        
+        function fecharModalRecurso() {
+            document.getElementById('modal-recurso').classList.add('hidden');
+        }
+        
+        function editarRecurso(id) {
+            const recurso = recursosDB.find(r => r.id === id);
+            if (!recurso) return;
+            document.getElementById('modal-recurso').classList.remove('hidden');
+            document.getElementById('modal-title').textContent = 'Editar Recurso';
+            document.getElementById('recurso-id').value = recurso.id;
+            document.getElementById('recurso-nome').value = recurso.nome;
+            document.getElementById('recurso-tipo').value = recurso.tipo;
+            document.getElementById('recurso-qtd').value = recurso.quantidade;
+        }
+        
+        function salvarRecurso() {
+            const id = document.getElementById('recurso-id').value;
+            const nome = document.getElementById('recurso-nome').value;
+            const tipo = document.getElementById('recurso-tipo').value;
+            const qtd = parseInt(document.getElementById('recurso-qtd').value);
+            
+            if (!nome) return alert('Nome é obrigatório');
+            
+            const statusRadios = document.querySelectorAll('input[name="status"]');
+            let status = 'Ativo';
+            statusRadios.forEach(r => { if (r.checked) status = r.value; });
+            
+            if (id) {
+                const recurso = recursosDB.find(r => r.id == id);
+                if (recurso) {
+                    recurso.nome = nome;
+                    recurso.tipo = tipo;
+                    recurso.status = status;
+                    recurso.quantidade = qtd;
+                }
+            } else {
+                const novoId = Math.max(...recursosDB.map(r => r.id), 0) + 1;
+                recursosDB.push({ id: novoId, nome: nome, tipo: tipo, status: status, quantidade: qtd });
+            }
+            
+            localStorage.setItem('wayne_recursos', JSON.stringify(recursosDB));
+            fecharModalRecurso();
+            renderRecursosTable();
+        }
+        
+        function deletarRecurso(id) {
+            if (confirm('Excluir este recurso?')) {
+                recursosDB = recursosDB.filter(r => r.id !== id);
+                localStorage.setItem('wayne_recursos', JSON.stringify(recursosDB));
+                renderRecursosTable();
+            }
+        }
+        
+        // ===================== VIGILÂNCIA =====================
+        function renderCameras() {
+            const grid = document.getElementById('grid-cameras');
+            grid.innerHTML = camerasDB.map(cam => `
+                <div onclick="abrirCamera(${cam.id})" class="bg-[#1f1f1f] rounded-3xl overflow-hidden cursor-pointer hover:ring-4 hover:ring-bat-yellow/30">
+                    <div class="relative">
+                        <video src="${cam.video}" class="w-full aspect-video object-cover cctv-video" muted loop></video>
+                        <div class="absolute top-4 left-4 px-4 py-1 bg-black/70 rounded-3xl text-xs flex items-center">
+                            <span class="live-dot w-2 h-2 bg-red-500 rounded-full mr-2"></span> LIVE
+                        </div>
+                        <div class="absolute bottom-4 right-4 bg-black/70 text-xs px-3 py-1 rounded-2xl">${cam.local}</div>
+                    </div>
+                    <div class="p-4 font-medium">${cam.nome}</div>
+                </div>
+            `).join('');
+        }
+        
+        function abrirCamera(id) {
+            const cam = camerasDB.find(c => c.id === id);
+            if (!cam) return;
+            document.getElementById('modal-camera-nome').textContent = cam.nome;
+            const videoEl = document.getElementById('modal-camera-video');
+            videoEl.src = cam.video;
+            videoEl.play();
+            document.getElementById('modal-camera').classList.remove('hidden');
+        }
+        
+        function fecharModalCamera() {
+            const videoEl = document.getElementById('modal-camera-video');
+            videoEl.pause();
+            document.getElementById('modal-camera').classList.add('hidden');
+        }
+        
+        // ===================== GALERIA DE VILÕES =====================
+        function renderViloes() {
+            const grid = document.getElementById('grid-viloes');
+            grid.innerHTML = viloesDB.map((v, index) => `
+                <div onclick="abrirVilao(${index})" class="bg-[#1f1f1f] rounded-3xl overflow-hidden border border-bat-yellow/10 hover:border-bat-yellow cursor-pointer">
+                    <img src="${v.imagens[0]}" class="w-full h-56 object-cover">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start">
+                            <h3 class="text-2xl font-semibold">${v.nome}</h3>
+                            <span class="text-xs font-bold px-5 py-1 rounded-3xl ${v.nivel === 'EXTREMO' ? 'bg-red-400 text-black' : 'bg-amber-400 text-black'}">${v.nivel}</span>
+                        </div>
+                        <p class="text-gray-400 mt-3 text-sm leading-tight">${v.descricao}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function abrirVilao(index) {
+            const v = viloesDB[index];
+            document.getElementById('vilao-nome-modal').textContent = v.nome;
+            document.getElementById('vilao-desc-modal').textContent = v.descricao;
+            
+            const container = document.getElementById('vilao-imagens');
+            container.innerHTML = v.imagens.map(src => `
+                <div class="relative">
+                    <img src="${src}" class="rounded-2xl shadow-2xl w-full border-2 border-bat-yellow/30">
+                    <div class="absolute top-3 right-3 bg-black/70 text-[10px] px-3 py-1 rounded-3xl text-white">FOTO DE ARQUIVO - ARKHAM</div>
+                </div>
+            `).join('');
+            
+            document.getElementById('modal-vilao').classList.remove('hidden');
+        }
+        
+        function fecharModalVilao() {
+            document.getElementById('modal-vilao').classList.add('hidden');
+        }
+        
+        // ===================== INICIALIZAÇÃO =====================
+        function initAppData() {
+            initDashboard();
+            renderAcessoTable();
+            renderRecursosTable();
+            renderCameras();
+            renderViloes();
+        }
+        
+        function main() {
+            initThreeJS();
+            createCSSBats(); 
+            createMiniBats();                    // ← Mini morcegos pretos pela tela inteira
+            console.log('%c✅ Protótipo Indústrias Wayne v1.2 completo!\nMini morcegos pretos + Vídeos em câmeras de segurança + Modal de vilões com 2 imagens cada', 'background:#facc15;color:#111;font-size:13px');
+        }
+        
+        window.onload = main;
+    </script>
+</body>
+</html>
