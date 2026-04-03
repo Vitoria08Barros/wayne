@@ -605,14 +605,31 @@
 
         // ===================== NAVEGAÇÃO =====================
         function navigateTo(page) {
-            document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
-            const target = document.getElementById(`page-${page}`);
-            if (target) target.classList.remove('hidden');
-            
-            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('text-bat-yellow'));
-            const activeMenu = document.getElementById(`menu-${page}`);
-            if (activeMenu) activeMenu.classList.add('text-bat-yellow');
+
+    // 🔒 BLOQUEIO DE ACESSO POR PERFIL
+    if (currentRole === 'funcionario') {
+        if (page === 'recursos' || page === 'acesso') {
+            alert('Acesso restrito! Apenas gerentes ou administradores.');
+            return;
         }
+    }
+
+    if (currentRole === 'gerente') {
+        if (page === 'acesso') {
+            alert('Apenas administradores podem acessar esta área.');
+            return;
+        }
+    }
+
+    // Navegação normal
+    document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+    const target = document.getElementById(`page-${page}`);
+    if (target) target.classList.remove('hidden');
+
+    document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('text-bat-yellow'));
+    const activeMenu = document.getElementById(`menu-${page}`);
+    if (activeMenu) activeMenu.classList.add('text-bat-yellow');
+}
 
         // ===================== DASHBOARD =====================
         function initDashboard() {
