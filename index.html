@@ -157,6 +157,11 @@
     <!-- APLICAÇÃO PRINCIPAL -->
     <div id="main-app" class="hidden min-h-screen bg-batman">
         <!-- NAVBAR -->
+         <div id="aviso-acesso" class="hidden max-w-screen-2xl mx-auto mt-4 px-8">
+    <div class="bg-red-500/10 border border-red-500 text-red-400 px-6 py-4 rounded-2xl text-sm font-medium">
+        🔒 Acesso restrito: você não tem permissão para acessar esta área.
+    </div>
+</div>
         <nav class="bg-black border-b border-bat-yellow/30 sticky top-0 z-50">
             <div class="max-w-screen-2xl mx-auto px-8 py-5 flex items-center justify-between">
                 <div class="flex items-center gap-3">
@@ -413,10 +418,10 @@
                 nome: "Duas-Caras",
                 descricao: "Ex-promotor que age por acaso. Usa uma moeda para decidir suas ações.",
                 imagens: [
-                    "https://media1.tenor.com/m/9IJUt5oZ3moAAAAC/two-face-two-face-dc.gif",
-                    "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1QAUJA.img?w=740&h=416&m=4&q=55",
-                    "https://static1.srcdn.com/wordpress/wp-content/uploads/2020/05/two-face-Cropped.jpg?q=50&fit=crop&w=825&dpr=1.5",
                     "https://media1.tenor.com/m/b5vWm67X3T4AAAAC/harvey-dent-angry.gif",
+                    "https://media1.tenor.com/m/9IJUt5oZ3moAAAAC/two-face-two-face-dc.gif",
+                    "https://static1.srcdn.com/wordpress/wp-content/uploads/2020/05/two-face-Cropped.jpg?q=50&fit=crop&w=825&dpr=1.5",
+                    "https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1QAUJA.img?w=740&h=416&m=4&q=55",
                 ],
                 nivel: "ALTO"
             },
@@ -442,8 +447,9 @@
             },
             "drone-de-vigilância-mark-iv": {
                 titulo: "Drone de Vigilância Mark IV",
-                conteudo: "<p class='mb-4'>12 drones em operação. Equipados com visão térmica, câmera de alta resolução e transmissão em tempo real.</p><p><strong>Alcance:</strong> 15 km</p>"
+                conteudo: "<p class='mb-4'>Os drones em operação. Equipados com visão térmica, câmera de alta resolução e transmissão em tempo real.</p><ul class='list-disc pl-5 space-y-1'><li>Alcance: 15km /h</li><li>Funcionamento: 24 horas</li><li>Modo voador ativado</li></ul>"
             },
+            
             "sistema-de-câmeras-infravermelhas": {
                 titulo: "Sistema de Câmeras Infravermelhas",
                 conteudo: "<p class='mb-4'>48 câmeras instaladas cobrindo toda a Batcaverna e perímetro externo com IA de detecção.</p><p><strong>Recursos:</strong> Visão noturna, detecção de movimento e gravação 4K</p>"
@@ -551,48 +557,25 @@
             document.getElementById('login-page').classList.add('hidden');
             document.getElementById('landing').classList.remove('hidden');
         }
-        
-       async function handleLogin() {
-    const username = document.getElementById('username').value.trim();
-    const password = document.getElementById('password').value;
 
-    const res = await fetch('http://localhost:5000/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-    });
-
-    if (res.ok) {
-        const user = await res.json();
-        currentUser = user.nome;
-        currentRole = user.role;
-
-        document.getElementById('login-page').classList.add('hidden');
-        document.getElementById('main-app').classList.remove('hidden');
-
-        loadUserInfo();
-        navigateTo('dashboard');
-        initAppData();
-    } else {
-        alert('Login inválido!');
-    }
-}
-        
         function loadUserInfo() {
-            const container = document.getElementById('user-info');
-            container.innerHTML = `
-                <div class="text-xs uppercase tracking-widest bg-black px-3 py-1 rounded-3xl flex items-center">
-                    <span class="text-bat-yellow">🦇</span><span class="ml-2">${currentRole.toUpperCase()}</span>
-                </div>
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 bg-yellow-400 text-black rounded-2xl flex items-center justify-center text-xl">${currentUser[0]}</div>
-                    <div>
-                        <div class="font-medium">${currentUser}</div>
-                        <div class="text-xs text-gray-400">${currentRole}</div>
-                    </div>
-                </div>
-            `;
-        }
+    const container = document.getElementById('user-info');
+    container.innerHTML = `
+        <div class="text-xs uppercase tracking-widest bg-black px-3 py-1 rounded-3xl flex items-center">
+            <span class="text-bat-yellow">🦇</span>
+            <span class="ml-2">${currentRole.toUpperCase()}</span>
+        </div>
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-yellow-400 text-black rounded-2xl flex items-center justify-center text-xl">
+                ${currentUser[0]}
+            </div>
+            <div>
+                <div class="font-medium">${currentUser}</div>
+                <div class="text-xs text-gray-400">${currentRole}</div>
+            </div>
+        </div>
+    `;
+}
         
         function logout() {
             if (confirm('Deseja realmente sair do sistema de segurança?')) {
@@ -604,33 +587,41 @@
         }
 
         // ===================== NAVEGAÇÃO =====================
-        function navigateTo(page) {
+       function navigateTo(page) {
 
-    // 🔒 BLOQUEIO DE ACESSO POR PERFIL
+    esconderAviso();
+
     if (currentRole === 'funcionario') {
         if (page === 'recursos' || page === 'acesso') {
-            alert('Acesso restrito! Apenas gerentes ou administradores.');
+            mostrarAviso();
             return;
         }
     }
 
     if (currentRole === 'gerente') {
         if (page === 'acesso') {
-            alert('Apenas administradores podem acessar esta área.');
+            mostrarAviso();
             return;
         }
     }
 
-    // Navegação normal
     document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+
     const target = document.getElementById(`page-${page}`);
     if (target) target.classList.remove('hidden');
 
     document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('text-bat-yellow'));
+
     const activeMenu = document.getElementById(`menu-${page}`);
     if (activeMenu) activeMenu.classList.add('text-bat-yellow');
+    function mostrarAviso() {
+    document.getElementById('aviso-acesso').classList.remove('hidden');
 }
 
+    function esconderAviso() {
+    document.getElementById('aviso-acesso').classList.add('hidden');
+}
+}
         // ===================== DASHBOARD =====================
         function initDashboard() {
             const ctx = document.getElementById('chart-atividades');
@@ -743,31 +734,33 @@
             document.getElementById('recurso-qtd').value = recurso.quantidade;
         }
         
-       async function salvarRecurso() {
+   async function salvarRecurso() {
     const id = document.getElementById('recurso-id').value;
     const nome = document.getElementById('recurso-nome').value;
     const tipo = document.getElementById('recurso-tipo').value;
     const qtd = parseInt(document.getElementById('recurso-qtd').value);
 
     const statusRadios = document.querySelectorAll('input[name="status"]');
-    let status = 'Ativo';
-    statusRadios.forEach(r => { if (r.checked) status = r.value; });
+    let status = 'ativo';
+    statusRadios.forEach(r => { if (r.checked) status = r.value });
 
     const data = { nome, tipo, status, quantidade: qtd };
 
-    if (id) {
-        await fetch(`http://localhost:5000/recursos/${id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        });
-    } else {
-        await fetch('http://localhost:5000/recursos', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        });
-    }
+    const isEditando = id && id !== "";
+
+const url = isEditando
+    ? `http://localhost:5000/recursos/${id}`
+    : 'http://localhost:5000/recursos';
+
+const method = isEditando ? 'PUT' : 'POST';
+    await fetch(url, {
+        method: method,
+        headers: {
+            'Content-Type': 'application/json',
+            'role': currentRole
+        },
+        body: JSON.stringify(data)
+    });
 
     fecharModalRecurso();
     initAppData();
@@ -781,9 +774,11 @@
     if (!confirm('Excluir este recurso?')) return;
 
     await fetch(`http://localhost:5000/recursos/${id}`, {
-        method: 'DELETE'
-    });
-
+    method: 'DELETE',
+    headers: {
+        'role': currentRole // 👈 aqui também
+    }
+});
     initAppData();
 }
 
@@ -874,7 +869,36 @@
             createMiniBats();
             console.log('%c✅ Protótipo Indústrias Wayne v1.3 - Clique na linha para ver detalhes do recurso', 'background:#facc15;color:#111;font-size:13px');
         }
-        
+
+      async function handleLogin() {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    const res = await fetch('http://localhost:5000/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, password })
+    });
+
+    if (res.ok) {
+        const user = await res.json();
+
+        currentUser = user.nome;
+        currentRole = user.role;
+
+        document.getElementById('login-page').classList.add('hidden');
+        document.getElementById('main-app').classList.remove('hidden');
+
+        loadUserInfo();
+        initAppData();
+        navigateTo('dashboard');
+
+    } else {
+        alert('Login inválido!');
+    }
+}
         window.onload = main;
     </script>
 </body>
