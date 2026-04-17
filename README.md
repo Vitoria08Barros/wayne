@@ -2,9 +2,9 @@
 
 ## 📌 Descrição do Projeto
 
-O sistema Wayne Industries é uma aplicação web full stack desenvolvida com o objetivo de simular um ambiente corporativo com autenticação de usuários, controle de acesso por níveis hierárquicos e gerenciamento de recursos internos.
+O sistema Wayne Industries é uma aplicação web full stack desenvolvida com o objetivo de simular um ambiente corporativo seguro, com autenticação de usuários, controle de acesso baseado em níveis hierárquicos e gerenciamento de recursos internos.
 
-A aplicação integra frontend e backend por meio de API REST, permitindo comunicação dinâmica entre as camadas do sistema.
+A aplicação segue o modelo cliente-servidor, integrando frontend e backend por meio de uma API REST, garantindo comunicação eficiente, segura e dinâmica entre as camadas do sistema.
 
 ---
 
@@ -32,8 +32,9 @@ A aplicação integra frontend e backend por meio de API REST, permitindo comuni
   - Administrador
   - Gerente
   - Funcionário
-- Redirecionamento de dashboard conforme perfil
-- Cadastro e visualização de recursos
+- Restrição de acesso a funcionalidades conforme o perfil do usuário
+- Cadastro, edição, exclusão e visualização de recursos (CRUD completo)
+- Dashboard com visualização de dados
 - Integração entre frontend e backend
 - Comunicação via API REST (JSON)
 
@@ -59,31 +60,36 @@ O sistema utiliza o MySQL com duas tabelas principais:
 
 📁 O script completo do banco está disponível no arquivo:
 
+
 database/wayne_db.sql
+
+
+---
 
 ## 🔐 Acesso ao Sistema (Teste)
 
 Credenciais para avaliação:
 
 ### 🛡️ Administrador
-- Usuário: admin
-- Senha: 1234
+- Usuário: admin  
+- Senha: 1234  
 
 ### 📊 Gerente
-- Usuário: gerente
-- Senha: 1234
+- Usuário: gerente  
+- Senha: 1234  
 
 ### 👷 Funcionário
-- Usuário: funcionario
-- Senha: 1234
+- Usuário: funcionario  
+- Senha: 1234  
 
 ---
 
 ## 🚀 Como Executar o Projeto
 
 ### 1. Banco de Dados
-- Abrir MySQL
+- Abrir o MySQL
 - Executar o arquivo:
+
 
 database/wayne_db.sql
 
@@ -91,46 +97,55 @@ database/wayne_db.sql
 ---
 
 ### 2. Backend (Flask)
+
 No terminal, execute:
 
-```bash id="p1q7lm"
+```bash
 python app.py
 
 Servidor rodando em:
 
 http://localhost:5000
-Abrir o arquivo index.html no navegador
-OU
-Utilizar extensão Live Server no VS Code
+3. Frontend
+
+Abrir o arquivo index.html utilizando um servidor local (recomendado: Live Server no VS Code).
+
 🔗 Integração do Sistema
 
 O frontend envia requisições HTTP para o backend utilizando Fetch API.
 
 Fluxo do sistema:
-
 Usuário realiza login
 Frontend envia dados para API Flask
 Backend valida no banco MySQL
-Sistema retorna nível de acesso
-Usuário é redirecionado para o painel correspondente
+Sistema retorna os dados do usuário
+O frontend controla o acesso conforme o nível (role)
+Usuário acessa funcionalidades permitidas
 🧪 Endpoint da API
 POST /login
 
 Descrição: Autentica usuário no sistema
 
 Body (JSON):
-
 {
   "username": "admin",
   "password": "1234"
 }
-
 Resposta de sucesso:
-
 {
-  "status": "success",
+  "id": 1,
+  "username": "admin",
+  "nome": "Bruce Wayne",
   "role": "administrador"
 }
+🔄 Operações CRUD
+
+O sistema permite operações completas de CRUD (Create, Read, Update, Delete) sobre os recursos:
+
+Criar novos recursos
+Listar recursos existentes
+Atualizar informações
+Deletar registros
 📁 Estrutura do Projeto
 wayne-industries/
 │
@@ -138,15 +153,18 @@ wayne-industries/
 │   └── app.py
 │
 ├── frontend/
-│   ├── index.html
-│   ├── admin.html
-│   ├── gerente.html
-│   └── funcionario.html
+│   └── index.html
 │
 ├── database/
 │   └── wayne_db.sql
 │
 └── README.md
+🔐 Segurança
+
+Para fins acadêmicos, as senhas estão armazenadas em formato simples.
+
+Em um ambiente real, seria utilizada criptografia (ex: bcrypt) para proteção dos dados dos usuários.
+
 🎯 Objetivo Acadêmico
 
 Este projeto tem como objetivo demonstrar a aplicação prática de conceitos de desenvolvimento full stack, incluindo:
@@ -156,8 +174,11 @@ Manipulação de banco de dados relacional
 Implementação de autenticação de usuários
 Organização de sistema web estruturado
 Controle de acesso por níveis de permissão
+🌐 Observações
+O sistema foi desenvolvido para fins acadêmicos
+Algumas funcionalidades utilizam dados simulados no frontend
+O backend implementa controle de acesso real baseado em permissões
 
 
 🦇 Autor
-Vitória Barros.
-
+Vitória Barros
